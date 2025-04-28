@@ -4,7 +4,13 @@ import Login from "./pages/Login";
 import MainPage from "./pages/MainPage";
 import Groups from "./pages/Groups";
 import History from "./pages/History";
-import Group from "./pages/Group";
+import Book from "./pages/Book";
+import GroupBook from "./pages/GroupBook";
+import AddBook from "./pages/AddBook";
+import DeleteBook from "./pages/DeleteBook";
+import SearchBook from "./pages/SearchBook";
+import OverdueUsers from "./pages/OverdueUsers";
+
 
 function App() {
   const [user_id, setuser_id] = useState(null);
@@ -39,7 +45,13 @@ function App() {
             <Route path="/main" element={isLoggedIn ? <MainPage user_id={user_id} /> : <Navigate to="/" />} />
             <Route path="/groups/:user_id" element={isLoggedIn ? <Groups user_id={user_id} /> : <Navigate to="/" />} />
             <Route path="/history/:user_id" element={isLoggedIn ? <History /> : <Navigate to="/" />} />
-            <Route path="/group/:group_id" element={isLoggedIn ? <Group /> : <Navigate to="/" />} />
+            <Route path="/book/:book_id" element={isLoggedIn ? <Book user_id={user_id} /> : <Navigate to="/" />} />
+            <Route path="/group-book/:user_id/:group_id/:book_id" element={isLoggedIn ? <GroupBook user_id={user_id} /> : <Navigate to="/" />} />
+            <Route path="/add-book" element={<AddBook />} />
+            <Route path="/delete-book" element={<DeleteBook />} />
+            <Route path="/search-book/:user_id" element={isLoggedIn ? <SearchBook user_id={user_id} /> : <Navigate to="/" />} />
+            <Route path="/overdue-users" element={<OverdueUsers />} />
+
           </Routes>
         </div>
       </div>

@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
+// GroupBook.jsx
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-const Book = ({ user_id }) => {
-    const { book_id } = useParams();
+const GroupBook = ({ user_id }) => {
+    const { group_id, book_id } = useParams(); 
     const [bookDetails, setBookDetails] = useState(null);
     const [yourBookRating, setYourBookRating] = useState(0);
     const [yourAuthorRating, setYourAuthorRating] = useState(0);
-
 
     useEffect(() => {
         const fetchBookInfo = async () => {
             try {
                 const res = await fetch(`/api/book_info?user_id=${user_id}&book_id=${book_id}`);
                 const data = await res.json();
-
-                console.log(data);
 
                 setBookDetails({
                     name: data.book_name,
@@ -34,7 +32,7 @@ const Book = ({ user_id }) => {
         };
 
         fetchBookInfo();
-    }, [user_id, book_id]);
+    }, [user_id, group_id, book_id]);
 
     if (!bookDetails) return <div>Loading book info...</div>;
 
@@ -47,24 +45,22 @@ const Book = ({ user_id }) => {
                 },
                 body: JSON.stringify({
                     user_id: user_id,
-                    is_group_borrowing: 0,
-                    group_id: 0,
+                    is_group_borrowing: 1,
+                    group_id: group_id,
                     book_id: book_id,
                 }),
             });
-    
+
             if (!res.ok) throw new Error("Failed to borrow book");
-    
+
             const result = await res.json();
             console.log("Borrow success:", result);
-
             alert("Book borrowed successfully! Thank you!");
         } catch (err) {
-            // console.error("Borrow failed:", err);
             alert("Failed to borrow book! Please try again later");
         }
-    }; 
-    
+    };
+
     const handleRate = async () => {
         try {
             const res = await fetch("/api/rate_book_author", {
@@ -74,27 +70,26 @@ const Book = ({ user_id }) => {
                 },
                 body: JSON.stringify({
                     user_id: user_id,
-                    group_id: null,
-                    is_group_rating: 0,
+                    group_id: group_id,
+                    is_group_rating: 1,
                     author_rating: yourAuthorRating,
                     book_rating: yourBookRating,
                     author_id: bookDetails.authorId,
                     book_id: book_id,
                 }),
             });
-    
+
             if (!res.ok) throw new Error("Failed to rate book/author");
-    
+
             const result = await res.json();
             console.log("Rating success:", result);
 
             alert("Rating submitted successfully! Thank you!");
-        } catch (err) {
 
+        } catch (err) {
             alert("Failed to submit rating! Please try again");
         }
     };
-    
 
     return (
         <div className="mt-6 p-6 bg-white rounded shadow max-w-xl mx-auto w-full">
@@ -145,7 +140,7 @@ const Book = ({ user_id }) => {
                     </button>
                 </div>
 
-                <div style={{marginBottom: "10px"}}>
+                <div style={{ marginBottom: "10px" }}>
                     <button
                         style={{ width: "100%", height: "40px", fontSize: "18px" }}
                         onClick={handleBorrow}
@@ -155,9 +150,8 @@ const Book = ({ user_id }) => {
                 </div>
 
             </div>
-
         </div>
     );
 };
 
-export default Book;
+export default GroupBook;
